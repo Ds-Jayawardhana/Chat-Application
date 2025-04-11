@@ -23,6 +23,13 @@ public class HelloWorldResources {
     private static final Map<Integer, User>users =new HashMap<>();
 
     // Static block to initialize users
+    static{
+         users.put(1,new User(1,"bob"));
+          users.put(2,new User(2,"John"));
+           users.put(3,new User(3,"Doe"));
+    
+    }
+       
 
 
 
@@ -33,8 +40,23 @@ public class HelloWorldResources {
     @Produces(MediaType.APPLICATION_JSON)
     
     public User getUserById(@PathParam("userID")int userId){
+            if(users.get(userId)==null){
+                System.out.print("User was not found");
+            }
+        
+            return users.get(userId);
+    }
+    
+    
+    
+    @GET
+    @Path("/allusers")
+    public void getAllUsers(){
+        for(User user :users.values()){
+            System.out.print("The name of the student"+user);
             
         }
-    
- }
+        
+    }
+}
 
