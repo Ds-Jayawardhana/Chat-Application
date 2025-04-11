@@ -4,13 +4,16 @@
  */
 package com.university.tute7.tute7answers.resources;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 
 /**
@@ -30,33 +33,28 @@ public class HelloWorldResources {
     
     }
        
-
-
-
-    
-    
+   
     @GET
     @Path("/user/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     
-    public User getUserById(@PathParam("userID")int userId){
-            if(users.get(userId)==null){
-                System.out.print("User was not found");
-            }
-        
-            return users.get(userId);
+    public Response getUserById(@PathParam("userId")int userId){
+           User user = users.get(userId);
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                           .entity("User with ID " + userId + " not found")
+                           .build();
+        }
+        return Response.ok(user).build();
     }
     
     
     
+
     @GET
     @Path("/allusers")
-    public void getAllUsers(){
-        for(User user :users.values()){
-            System.out.print("The name of the student"+user);
-            
-        }
-        
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<User> getAllUsers() {
+        return new ArrayList<>(users.values());
     }
 }
-
