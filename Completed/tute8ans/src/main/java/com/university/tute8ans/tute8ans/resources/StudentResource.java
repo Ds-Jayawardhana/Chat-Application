@@ -12,8 +12,10 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -50,4 +52,22 @@ public class StudentResource {
         return new  ArrayList<>(studentStore.values());
         
     } 
+    
+    @Path("/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public static Response getStudentById(@PathParam("id")String id){
+       Student student=studentStore.get(id);
+       if(student!=null){
+           return Response.ok(student).build();
+       }else{
+           return Response.status(Response.Status.NOT_FOUND)
+                   .entity("Studnet Not Found for ID"+ id)
+                   .build();
+       }
+                
+            
+    
+    }
+    
 }
