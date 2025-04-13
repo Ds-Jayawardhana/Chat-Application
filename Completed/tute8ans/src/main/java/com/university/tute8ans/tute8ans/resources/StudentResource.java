@@ -4,7 +4,6 @@
  */
 package com.university.tute8ans.tute8ans.resources;
 
-import com.university.tute8ans.tute8ans.Student;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,122 +26,98 @@ import javax.ws.rs.core.Response;
  */
 @Path("/students")
 public class StudentResource {
-    private static final ConcurrentHashMap<String,Student>studentStore=new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String,Student> studentStore = new ConcurrentHashMap<>();
 
-    static{
+    static {
         addInitialStudents();
     }
     
-    private static void addInitialStudents(){
-        Student student1 = new Student(UUID.randomUUID().toString(), "Alice",
-        "Smith");
-        Student student2 = new Student(UUID.randomUUID().toString(), "Bob",
-        "Johnson");
-         Student student3 = new Student(UUID.randomUUID().toString(), "Charlie",
-        "Brown");
+    private static void addInitialStudents() {
+        Student student1 = new Student(UUID.randomUUID().toString(), "Alice", "Smith");
+        Student student2 = new Student(UUID.randomUUID().toString(), "Bob", "Johnson");
+        Student student3 = new Student(UUID.randomUUID().toString(), "Charlie", "Brown");
          
-         studentStore.put(student1.getId(), student1);
-         studentStore.put(student2.getId(), student2);
-         studentStore.put(student3.getId(), student3);
-         
-         
-        
+        studentStore.put(student1.getId(), student1);
+        studentStore.put(student2.getId(), student2);
+        studentStore.put(student3.getId(), student3);
     }
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public static List<Student> getAllStudent(){
-        
-        return new  ArrayList<>(studentStore.values());
-        
+    public List<Student> getAllStudent() {
+        return new ArrayList<>(studentStore.values());
     } 
     
-    @Path("/{id}")
     @GET
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public static Response getStudentById(@PathParam("id")String id){
-       Student student=studentStore.get(id);
-       if(student!=null){
+    public Response getStudentById(@PathParam("id") String id) {
+       Student student = studentStore.get(id);
+       if (student != null) {
            return Response.ok(student).build();
-       }else{
+       } else {
            return Response.status(Response.Status.NOT_FOUND)
-                   .entity("Studnet Not Found for ID"+ id)
+                   .entity("Student Not Found for ID: " + id)
                    .build();
        }
-                
-            
-    
     }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    
-    public static Response createStudent(Student student){
-        if(student.getFirstName()==null & student.getLastName()==null){
+    public Response createStudent(Student student) {
+        if (student.getFirstName() == null && student.getLastName() == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("First Name and Last Name are Required")
                     .build();
-        }else{
-            String id=UUID.randomUUID().toString();
+        } else {
+            String id = UUID.randomUUID().toString();
             student.setId(id);
             studentStore.put(id, student);
         }
         
         return Response.status(Response.Status.CREATED)
-                .entity("New Student Created with ID"+student)
+                .entity("New Student Created with ID: " + student.getId())
                 .build();
-        
-        
-     }
+    }
     
     @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{id}")
-    
-    public static Response updateStudent(@PathParam("id")String id){
-        Student student=studentStore.get(id);
+    public Response updateStudent(@PathParam("id") String id, Student updatedStudent) {
+        Student existingStudent = studentStore.get(id);
         
+        if (existingStudent == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Student not found with ID: " + id)
+                    .build();
+        }
         
+        if (updatedStudent.getFirstName() != null) {
+            existingStudent.setFirstName(updatedStudent.getFirstName());
+        }
         
-        if(student==null){
-              return Response.status(Response.Status.NOT_FOUND).entity("Student not found with ID: " + id).build();
-           
-            
+        if (updatedStudent.getLastName() != null) {
+            existingStudent.setLastName(updatedStudent.getLastName());
         }
-        Student updatedStudent=new Student();
-        updatedStudent.setId(id);
-        if(updatedStudent.getFirstName()!=null){
-            student.setFirstName(updatedStudent.getFirstName());
-            
-        }
-        if(updatedStudent.getLastName()!=null){
-            student.setLastName(updatedStudent.getLastName());
-        }
-        studentStore.put(id, student);
-        return Response.ok(student).build();
-      }
-  
+        
+        studentStore.put(id, existingStudent);
+        return Response.ok(existingStudent).build();
+    }
     
     @DELETE
     @Path("/{id}")
-    public static Response deleteStudent(@PathParam("id")String id){
-        Student student=studentStore.remove(id);
+    public Response deleteStudent(@PathParam("id") String id) {
+        Student student = studentStore.remove(id);
         
-        if(student!=null){
+        if (student != null) {
             return Response.status(Response.Status.NO_CONTENT)
                     .build();
-        }
-        
-        if(student==null){
+        } else {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Student with"+id+"Not Found in the Student List")
+                    .entity("Student with ID: " + id + " Not Found in the Student List")
                     .build();
         }
-            
     }
- }
-
-    
-   
+}
