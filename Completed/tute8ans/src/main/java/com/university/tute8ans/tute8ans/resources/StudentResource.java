@@ -5,10 +5,15 @@
 package com.university.tute8ans.tute8ans.resources;
 
 import com.university.tute8ans.tute8ans.Student;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 /**
  *
@@ -37,4 +42,12 @@ public class StudentResource {
          
         
     }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public static List<Student> getAllStudent(){
+        
+        return new  ArrayList<>(studentStore.values());
+        
+    } 
 }
