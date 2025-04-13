@@ -5,7 +5,7 @@
 package com.university.tute8ans.tute8ans.resources;
 
 import com.university.tute8ans.tute8ans.Student;
-import java.util.HashMap;
+
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.ws.rs.Path;
@@ -16,7 +16,7 @@ import javax.ws.rs.Path;
  */
 @Path("/students")
 public class StudentResource {
-    private static final HashMap<String,Student>studentStore=new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String,Student>studentStore=new ConcurrentHashMap<>();
 
     static{
         addInitialStudents();
@@ -33,6 +33,8 @@ public class StudentResource {
          studentStore.put(student1.getId(), student1);
          studentStore.put(student2.getId(), student2);
          studentStore.put(student3.getId(), student3);
+         
+         
         
     }
 }
