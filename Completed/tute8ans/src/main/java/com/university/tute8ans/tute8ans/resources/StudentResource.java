@@ -10,7 +10,9 @@ import java.util.List;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -69,5 +71,28 @@ public class StudentResource {
             
     
     }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    
+    public static Response createStudent(Student student){
+        if(student.getFirstName()==null & student.getLastName()==null){
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("First Name and Last Name are Required")
+                    .build();
+        }else{
+            String id=UUID.randomUUID().toString();
+            student.setId(id);
+            studentStore.put(id, student);
+        }
+        
+        return Response.status(Response.Status.CREATED)
+                .entity("New Student Created with ID"+student)
+                .build();
+        
+        
+     }
+    
     
 }
