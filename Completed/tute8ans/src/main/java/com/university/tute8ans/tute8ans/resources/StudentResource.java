@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -122,7 +123,26 @@ public class StudentResource {
         studentStore.put(id, student);
         return Response.ok(student).build();
       }
+  
+    
+    @DELETE
+    @Path("/{id}")
+    public static Response deleteStudent(@PathParam("id")String id){
+        Student student=studentStore.remove(id);
+        
+        if(student!=null){
+            return Response.status(Response.Status.NO_CONTENT)
+                    .build();
+        }
+        
+        if(student==null){
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Student with"+id+"Not Found in the Student List")
+                    .build();
+        }
+            
     }
+ }
 
     
    
