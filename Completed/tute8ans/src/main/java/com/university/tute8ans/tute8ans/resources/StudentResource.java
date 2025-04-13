@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -94,5 +95,34 @@ public class StudentResource {
         
      }
     
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
     
-}
+    public static Response updateStudent(@PathParam("id")String id){
+        Student student=studentStore.get(id);
+        
+        
+        
+        if(student==null){
+              return Response.status(Response.Status.NOT_FOUND).entity("Student not found with ID: " + id).build();
+           
+            
+        }
+        Student updatedStudent=new Student();
+        updatedStudent.setId(id);
+        if(updatedStudent.getFirstName()!=null){
+            student.setFirstName(updatedStudent.getFirstName());
+            
+        }
+        if(updatedStudent.getLastName()!=null){
+            student.setLastName(updatedStudent.getLastName());
+        }
+        studentStore.put(id, student);
+        return Response.ok(student).build();
+      }
+    }
+
+    
+   
